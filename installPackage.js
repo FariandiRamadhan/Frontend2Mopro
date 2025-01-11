@@ -3,8 +3,13 @@ import { View, Text, TouchableOpacity, TextInput, Button, StyleSheet, Alert} fro
 import Form from 'react-native-form';
 import CheckBox from 'react-native-check-box';
 import Textarea from 'react-native-textarea';
+import { Dropdown } from 'react-native-element-dropdown';
 
-
+const data = [
+  { label: 'Ruang 1', value: '1' },
+  { label: 'Ruang 2', value: '2' },
+  { label: 'Ruang 3', value: '3' }
+];
 
 
 export default class InstallPackage extends Component {
@@ -13,9 +18,12 @@ export default class InstallPackage extends Component {
     super(props);
     this.state = {
       isChecked: false,
+      data: [],
     };
   }
 render() {
+  const options = ['terjadwal', 'selesai'];
+
     return (
       <View style={{ marginTop: 50, marginHorizontal: 20 }}>
       
@@ -99,8 +107,78 @@ render() {
           placeholderTextColor={'#c7c7c7'}
         />
 
+        {/* Dropdown */}
+    <Dropdown
+        style={[
+          {
+            height: 50,
+            borderColor: 'gray',
+            borderWidth: 0.5,
+            borderRadius: 8,
+            paddingHorizontal: 8,
+            marginTop:10
+          },
+          this.state.isFocus && { borderColor: 'blue' },
+        ]}
+        placeholderStyle={{ fontSize: 16 }}
+        selectedTextStyle={{ fontSize: 16 }}
+        data={data}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!this.state.isFocus ? 'Pilih Ruangan' : 'Pilih Ruangan'}
+        value={this.state.dropdownValue}
+        onFocus={() => this.setState({ isFocus: true })}
+        onBlur={() => this.setState({ isFocus: false })}
+        onChange={(item) => {
+          this.setState({ dropdownValue: item.value, isFocus: false });
+        }}
+      />
 
-
+        {/* Radio Button */}
+        <Text
+          style={{
+            marginTop:10
+          }}
+        >Status Agenda:</Text>
+          {options.map((option) => {
+            return (
+              <TouchableOpacity
+                key={option}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  columnGap: 10,
+                  margin: 5,
+                }}
+                  onPress={() => this.setState({ selectedAgenda: option })}
+              >
+            <View
+              style={{
+              width: 20,
+              height: 20,
+              borderRadius: 15,
+              borderWidth: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              }}
+            >
+              {this.state.selectedAgenda === option ? (
+            <View
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 11,
+                backgroundColor: 'black',
+              }}
+            />
+              ) : null}
+            </View>
+          <Text>{option}</Text>
+      </TouchableOpacity>
+          );
+        })}
+      
 
       </View>
         );
