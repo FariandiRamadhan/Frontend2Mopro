@@ -1,10 +1,23 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { showData } from '../Utilities/fetch_functions';
 
-export default function SplashScreen() {
+export default function SplashScreen({ route }) {
   const progress = 0.5; 
   const navigation = useNavigation();
+
+  // Splash screen di skip karena sudah dilihat sekali
+  // const [isSkipSplash, setisSkipSplash] = useState(false);
+
+  // Mendapatkan username yang dipassing
+  const { username } = route.params;
+
+  showData("haveSplash")
+  .then(response => {
+    response.data ? navigation.navigate('MainDrawer'): null;
+  })
+  .catch(error => console.log("cookie data not found"));
 
   const handleSplashScreen1 = () => {
     navigation.navigate('SplashScreen2');
@@ -15,7 +28,7 @@ export default function SplashScreen() {
       style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.welcomeText}>Welcome Back Michael</Text>
+          <Text style={styles.welcomeText}>Welcome Back {username}</Text>
           <Text style={styles.progressText}>Let’s Get Started</Text>
           <View style={styles.progressBarContainer}>
             <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
