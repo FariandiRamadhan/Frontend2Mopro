@@ -4,14 +4,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import Home from './screens/Home';
-import Login from './screens/Login';
-import SplashScreen from './screens/SplashScreen';
-import SplashScreen2 from './screens/SplashScreen2';
+import Home from './Screens/Home';
+import Login from './Screens/Login';
+import SplashScreen from './Screens/SplashScreen';
+import SplashScreen2 from './Screens/SplashScreen2';
 import NewAgenda from './Screens/NewAgenda';
 import Search from './component/Search';
-import MeetingResult from './screens/MeetingResult';
-import ViewAgenda from './screens/ViewAgenda';
+import MeetingResult from './Screens/MeetingResult';
+import ViewAgenda from './Screens/ViewAgenda';
 import EditAgenda from './Screens/EditAgenda';
 import Notif from './component/Notif';
 
@@ -21,32 +21,30 @@ const Drawer = createDrawerNavigator();
 function CustomDrawerContent({ navigation }) {
   return (
     
-    <View style={styles.drawerContainer}>
-<View style={styles.sidebarHeader}>
-  <Text style={styles.sidebarTitle}>Hi Luca's</Text>
-  <TouchableOpacity onPress={() => navigation.closeDrawer()} style={styles.closeButton}>
-  <Text style={styles.closeButtonText}>✖</Text>
-</TouchableOpacity>
-</View>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Home')}>
-        <Ionicons name="home-outline" size={24} color="white" />
-        <Text style={styles.drawerLabel}>Home</Text>
+  <View style={styles.drawerContainer}>
+    <View style={styles.sidebarHeader}>
+      <Text style={styles.sidebarTitle}>Hi Luca's</Text>
+      <TouchableOpacity onPress={() => navigation.closeDrawer()} style={styles.closeButton}>
+        <Text style={styles.closeButtonText}>✖</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('NewAgenda')}>
-        <Ionicons name="add-circle-outline" size={24} color="white" />
-        <Text style={styles.drawerLabel}>New Agenda</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Search')}>
-        <Ionicons name="search-outline" size={24} color="white" />
-        <Text style={styles.drawerLabel}>Search Agenda</Text>
-      </TouchableOpacity>
-     <TouchableOpacity style={[styles.drawerItem, { marginTop: 420 }]} onPress={() => navigation.navigate('Login')}>
-  <Ionicons name="log-out-outline" size={24} color="white" />
-  <Text style={styles.drawerLabel}>Logout</Text>
-</TouchableOpacity>
-
-
     </View>
+    <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Home')}>
+      <Ionicons name="home-outline" size={24} color="white" />
+      <Text style={styles.drawerLabel}>Home</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('NewAgenda')}>
+      <Ionicons name="add-circle-outline" size={24} color="white" />
+      <Text style={styles.drawerLabel}>New Agenda</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Search')}>
+      <Ionicons name="search-outline" size={24} color="white" />
+      <Text style={styles.drawerLabel}>Search Agenda</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={[styles.drawerItem, { marginTop: 420 }]} onPress={() => navigation.navigate('Login')}>
+      <Ionicons name="log-out-outline" size={24} color="white" />
+      <Text style={styles.drawerLabel}>Logout</Text>
+    </TouchableOpacity>
+  </View>
   );
 }
 
