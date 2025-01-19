@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { storeData } from '../Utilities/fetch_functions';
 
 export default function SplashScreen2() {
   const navigation = useNavigation();
 
   const handleSplashScreen2 = () => {
-    navigation.replace('MainDrawer'); 
+    storeData("haveSplash", true);
+    navigation.replace('MainDrawer'); // Navigasi ke Drawer
   };
 
   return (

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState} from 'react';
+import { StyleSheet, SafeAreaView, View, Image, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { loginUser } from '../Utilities/fetch_functions';
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -11,8 +12,23 @@ export default function Login() {
   const navigation = useNavigation();
 
   const handleSignIn = () => {
-    navigation.navigate('SplashScreen');
+    console.log("click");
+    try {
+      loginUser(form.username, form.password).then(
+        response => {
+          console.log(response);
+          if (response.success) {
+            navigation.navigate('SplashScreen');
+          } else {
+            Alert.alert('Error', data.message || 'Login failed');
+          }
+        }
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Network error occurred');
+    }
   };
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.66)' }}>
