@@ -1,17 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import Notif from "../component/Notif";
+import { handleApiRequest } from "../Utilities/fetch_functions";
 
 export default function MeetingCards(){
     const [isDetailModalVisible, setDetailModalVisible] = useState(false);
     const [selectedMeeting, setSelectedMeeting] = useState(null);
+    const [dataAgenda, setDataAgenda] = useState([]);
     const handleViewDetails = (meeting) => {
         setSelectedMeeting(meeting);
         setDetailModalVisible(true);
     };
+
+    useEffect(()=>{
+        handleApiRequest("/agendas")
+        .then(response => setDataAgenda(response?.data))
+        .catch(error => console.error(error));
+    }, []);
     return (
-    <View style={styles.meetingCard}>
+        <>
         {/* POP UP Notifikasi */}
         <Notif
             isVisible={isDetailModalVisible}
@@ -20,39 +28,56 @@ export default function MeetingCards(){
         />
 
         {/* Informasi Meeting */}
-        <View style={styles.meetingInfo}>
-            <View style={styles.meetingHeader}>
-                <Text style={styles.meetingTitle}>Client Presentation</Text>
-                <TouchableOpacity 
-                style={styles.detailsButton}
-                onPress={() => handleViewDetails({
-                    title: "Client Presentation",
-                    date: "3/27/2024",
-                    time: "11:00",
-                    location: "Conference Room B"
-                })}
-                >
-                <Text style={styles.detailsButtonText}>View Details</Text>
-                </TouchableOpacity>
+        {console.log(dataAgenda)}
+        {dataAgenda?.length === 0? <View style={styles.meetingCard}><Text style={styles.meetingTitle}>There's no upcoming meeting</Text></View>: null}
+        {dataAgenda.map((data, index) => {
+            if(data?.status.toLowerCase() == "pending"){
+
+            return (
+            <View style={styles.meetingCard} key={data?.agenda_id}>
+                <View style={styles.meetingInfo}>
+                    <View style={styles.meetingHeader}>
+                        <Text style={styles.meetingTitle}>{data?.judul}</Text>
+                        <TouchableOpacity 
+                        style={styles.detailsButton}
+                        onPress={() => handleViewDetails({
+                            agenda_id       : data?.agenda_id,
+                            title           : data?.judul,
+                            deskripsi_rapat : data?.deskripsi_rapat,
+                            participants    : data?.participants,
+                            status          : data?.status,
+                            username        : data?.username,
+                            date            : data?.meeting_time.tanggal,
+                            time            : data?.meeting_time.jam,
+                            location        : data?.lokasi
+                        })}
+                        >
+                        <Text style={styles.detailsButtonText}>View Details</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.meetingDetails}>
+                        <Ionicons name="calendar-outline" size={14} color="#808080" />
+                        <Text style={styles.meetingDate}>{data?.meeting_time.tanggal}</Text>
+                    </View>
+                    <View style={styles.meetingDetails}>
+                        <Ionicons name="time-outline" size={14} color="#808080" />
+                        <Text style={styles.meetingTime}>{data?.meeting_time.jam}</Text>
+                    </View>
+                    <View style={styles.meetingDetails}>
+                        <Ionicons name="location-outline" size={14} color="#808080" />
+                        <Text style={styles.meetingLocation}>{data?.lokasi}</Text>
+                    </View>
+                    <View style={styles.meetingDetails}>
+                        <Ionicons name="people-outline" size={14} color="#808080" />
+                        <Text style={styles.meetingParticipants}>{data?.participants.length} Participants</Text>
+                    </View>
+                </View>
             </View>
-            <View style={styles.meetingDetails}>
-                <Ionicons name="calendar-outline" size={14} color="#808080" />
-                <Text style={styles.meetingDate}>3/27/2024</Text>
-            </View>
-            <View style={styles.meetingDetails}>
-                <Ionicons name="time-outline" size={14} color="#808080" />
-                <Text style={styles.meetingTime}>11:00</Text>
-            </View>
-            <View style={styles.meetingDetails}>
-                <Ionicons name="location-outline" size={14} color="#808080" />
-                <Text style={styles.meetingLocation}>Conference Room B</Text>
-            </View>
-            <View style={styles.meetingDetails}>
-                <Ionicons name="people-outline" size={14} color="#808080" />
-                <Text style={styles.meetingParticipants}>3 Participants</Text>
-            </View>
-        </View>
-    </View>
+            )}else if(dataAgenda.length-1 == index){
+                return <View style={styles.meetingCard} key={index}><Text style={styles.meetingTitle}>There's no upcoming meeting</Text></View>
+            }
+        })}
+    </>
 )}
 const styles = StyleSheet.create({
     meetingCard: {

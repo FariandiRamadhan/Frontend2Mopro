@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -16,10 +16,6 @@ export default function Home() {
 
   const handleNewAgenda = () => {
     navigation.navigate('NewAgenda');
-  };
-
-  const handleMeetingResult = () => {
-    navigation.navigate('MeetingResult');
   };
 
   const handleViewAgenda = () => {
@@ -49,16 +45,6 @@ export default function Home() {
                 <Text style={styles.menuTitle}>View Agenda</Text>
               </View>
               <Text style={styles.menuSubtitle}>View, filter and edit meeting agenda</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuCard} onPress={handleMeetingResult}>
-            <View style={styles.menuContent}>
-              <View style={styles.titleContainer}>
-                <Ionicons name="list" size={24} color="white" />
-                <Text style={styles.menuTitle}>Meeting Results</Text>
-              </View>
-              <Text style={styles.menuSubtitle}>Record meeting outcomes</Text>
             </View>
           </TouchableOpacity>
         </View>

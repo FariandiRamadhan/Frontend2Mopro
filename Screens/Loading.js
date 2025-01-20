@@ -6,7 +6,7 @@ export default function LoadingScreen(){
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#1C1C1E',
         },
     });
     return (

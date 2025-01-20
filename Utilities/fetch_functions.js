@@ -1,10 +1,17 @@
 // API configuration
-export const API_BASE_URL = 'https://propscountryside.cloud';
+// export const API_BASE_URL = 'https://propscountryside.cloud';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// export const API_BASE_URL = 'http://localhost:8080';
+export const API_BASE_URL = 'http://localhost:8080';
 
 // Main API request handler
-export const handleApiRequest = async (endpoint, options = {}) => {
+/**
+ * 
+ * @param {string} endpoint path yang dituju
+ * @param {object} options object request (header dan body)
+ * @param {boolean} rawResponse apakah nilai yang dikembalikan adalah response mentahnya, default false
+ * @returns 
+ */
+export const handleApiRequest = async (endpoint, options = {}, rawResponse = false) => {
   try {
     // Default Header untuk request
     const headers = {
@@ -21,6 +28,11 @@ export const handleApiRequest = async (endpoint, options = {}) => {
 
     // Request ke REST API
     const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
+
+    if(rawResponse){
+      return response;
+    }
+
     const data = await response.json();
 
     // console.dir(await response.headers);

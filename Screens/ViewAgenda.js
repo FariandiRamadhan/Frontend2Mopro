@@ -1,56 +1,49 @@
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+
+import { handleWarna } from '../components/statusColors';
 import Notif from '../component/Notif';
 import Search from '../component/Search';
 import Filter from '../component/Filter';
+import { handleApiRequest } from '../Utilities/fetch_functions';
 
 export default function ViewAgenda() {
   const navigation = useNavigation();
   const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [isDetailModalVisible, setDetailModalVisible] = useState(false);
+
+  // Menyimpan data Fetch
+  const [dataAgenda, setDataAgenda] = useState([]);
   const { filterMeetings } = Filter();
 
-  // Data meeting dalam bentuk array
-  const meetings = [
-    {
-      title: "Weekly Team Sync",
-      date: "3/25/2024",
-      time: "10:00",
-      location: "Meeting Room A",
-      participants: 3
-    },
-    {
-      title: "Project Review",
-      date: "3/26/2024",
-      time: "14:30",
-      location: "Main And Great Room C",
-      participants: 2
-    },
-    {
-      title: "Client Presentation",
-      date: "3/27/2024",
-      time: "11:00",
-      location: "Conference Room B",
-      participants: 3
-    }
-  ];
+  useEffect(()=>{
+    handleApiRequest("/agendas")
+      .then(response => setDataAgenda(response?.data))
+      .catch(error => console.error(error));
+  }, []);
 
-  const [filteredMeetings, setFilteredMeetings] = useState(meetings);
+  const [filteredMeetings, setFilteredMeetings] = useState(dataAgenda);
 
   const handleViewDetails = (meeting) => {
+    console.log(meeting);
     setSelectedMeeting(meeting);
     setDetailModalVisible(true);
   };
 
   const handleSearch = (searchParams) => {
-    const filtered = filterMeetings(meetings, searchParams);
+    const filtered = filterMeetings(dataAgenda, searchParams);
     setFilteredMeetings(filtered);
   };
 
   return (
     <View style={styles.container}>
+      <Notif
+        isVisible={isDetailModalVisible}
+        onClose={() => setDetailModalVisible(false)}
+        meeting={selectedMeeting}
+      />
       <View style={styles.header}>
         <Text style={styles.title}>Meeting Agenda</Text>
       </View>
@@ -60,28 +53,41 @@ export default function ViewAgenda() {
       </View>
 
       <ScrollView style={styles.meetingList}>
-        {filteredMeetings.map((meeting, index) => (
-          <View key={index} style={styles.meetingItem}>
-            <Text style={styles.meetingTitle}>{meeting.title}</Text>
+        {console.log(filteredMeetings)}
+        {dataAgenda.map(meeting => (
+          <View key={meeting?.agenda_id} style={styles.meetingItem}>
+            <Text style={styles.meetingTitle}>{meeting?.judul}</Text>
             <View style={styles.meetingDetails}>
               <View style={styles.detailItem}>
                 <Ionicons name="calendar-outline" size={16} color="#0066FF" />
-                <Text style={styles.detailText}>{meeting.date} {meeting.time}</Text>
+                <Text style={styles.detailText}>{meeting?.meeting_time.tanggal} {meeting?.meeting_time.jam}</Text>
               </View>
               <View style={styles.detailItem}>
                 <Ionicons name="location-outline" size={16} color="#0066FF" />
-                <Text style={styles.detailText}>{meeting.location}</Text>
+                <Text style={styles.detailText}>{meeting?.lokasi}</Text>
               </View>
               <View style={styles.detailItem}>
                 <Ionicons name="people-outline" size={16} color="#0066FF" />
-                <Text style={styles.detailText}>{meeting.participants} participants</Text>
+                <Text style={styles.detailText}>{meeting?.participants.length} participants</Text>
               </View>
-              <View style={styles.statusContainer}>
-                <Text style={styles.statusText}>pending</Text>
+              <View style={[styles.statusContainer, handleWarna(meeting?.status)?.bgColor]}>
+                <Text style={[styles.statusText, handleWarna(meeting?.status)?.color]}>{meeting?.status}</Text>
               </View>
               <TouchableOpacity 
                 style={styles.viewButton}
-                onPress={() => handleViewDetails(meeting)}
+                onPress={() => handleViewDetails({
+                  agenda_id       : meeting?.agenda_id,
+                  title           : meeting?.judul,
+                  deskripsi_rapat : meeting?.deskripsi_rapat,
+                  participants    : meeting?.participants,
+                  status          : meeting?.status,
+                  username        : meeting?.username,
+                  date            : meeting?.meeting_time.tanggal,
+                  time            : meeting?.meeting_time.jam,
+                  location        : meeting?.lokasi,
+                  kesimpulan      : meeting?.kesimpulan_rapat,
+                  followUpActions : meeting?.follow_up_actions
+              })}
               >
                 <Text style={styles.viewButtonText}>View Details</Text>
               </TouchableOpacity>
@@ -90,12 +96,6 @@ export default function ViewAgenda() {
           </View>
         ))}
       </ScrollView>
-
-      <Notif
-        isVisible={isDetailModalVisible}
-        onClose={() => setDetailModalVisible(false)}
-        meeting={selectedMeeting}
-      />
     </View>
   );
 }
@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   statusContainer: {
-    backgroundColor: '#423F00',
     alignSelf: 'flex-start',
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -168,7 +167,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   statusText: {
-    color: '#FFD600',
     fontSize: 12,
   },
   viewButton: {
