@@ -32,7 +32,7 @@ export default function NewAgenda() {
       body    : JSON.stringify(form)
     }).then(response => {
       if(response.success){
-        navigation.navigate('Home')
+        navigation.navigate('Home', {action: true});
       }
     }).catch(error => {
       if(typeof error[2]?.errors === "undefined"){
@@ -57,10 +57,10 @@ export default function NewAgenda() {
     // Membatasi input YYYY/MM/dd
     cleanInput = cleanInput.slice(0, 8);
 
-    if (cleanInput.length >= 6) {
-      formattedDate = `${cleanInput.slice(0, 4)}/${cleanInput.slice(4, 6)}/${cleanInput.slice(6, 8)}`;
-    } else if(cleanInput.length >= 4) {
-      formattedDate = `${cleanInput.slice(0, 4)}/${cleanInput.slice(4, 6)}`;
+    if (cleanInput.length >= 4) {
+      formattedDate = `${cleanInput.slice(0, 2)}/${cleanInput.slice(2, 4)}/${cleanInput.slice(4, 8)}`;
+    } else if(cleanInput.length >= 2) {
+      formattedDate = `${cleanInput.slice(0, 2)}/${cleanInput.slice(2, 4)}`;
     } else {
       formattedDate = cleanInput;
     }
@@ -69,17 +69,19 @@ export default function NewAgenda() {
     setForm({...form, meeting_time:{...form.meeting_time, tanggal: formattedDate}})
   }
 
+  // Menghandle perubahan input waktu
   const timeHandler = (rawTime) => {
+    // Menghapus ":" jika ditambahkan oleh user
     let cleanInput = rawTime.replace(':', '');
     let formattedTime = "";
 
-    // Remove any non-numeric characters
+    // Menghapus input non-numeric
     cleanInput = cleanInput.replace(/[^0-9]/g, '');
     
-    // Limit to 4 digits
+    // membatasi input menjadi 4 digit
     cleanInput = cleanInput.slice(0, 4);
     
-    // Add colon after two characters if length is greater than 2
+    // Menambahkan ":" jika input lebih dari 2 digit
     if (cleanInput.length >= 2) {
       formattedTime = cleanInput.slice(0, 2) + ':' + cleanInput.slice(2);
     } else {
@@ -89,7 +91,7 @@ export default function NewAgenda() {
     setTime(formattedTime);
     setForm({...form, meeting_time:{...form.meeting_time, jam: formattedTime}});
   }
-// navigation.navigate('Home')
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -122,7 +124,7 @@ export default function NewAgenda() {
             </View>
             <TextInput
               style={styles.input}
-              placeholder="yyyy/mm/dd"
+              placeholder="dd/mm/yyyy"
               placeholderTextColor="#666"
               value={date}
               onChangeText={dateHandler}

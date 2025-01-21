@@ -40,7 +40,7 @@ export default function Login() {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.66)' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.66)', alignItems: 'center' }}>
       <View style={styles.header}>
         <Image
           alt="App Logo"
@@ -103,11 +103,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.71)',
     alignItems: 'center',
+    width: '90%',
     padding: 20,
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 15,
     maxHeight: 300,
+    maxWidth: 500,
   },
   title2: {
     fontSize: 20,

@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Notif from "../components/Notif";
 import { handleApiRequest } from "../Utilities/fetch_functions";
 
-export default function MeetingCards(){
+export default function MeetingCards({ reRender }){
     const [isDetailModalVisible, setDetailModalVisible] = useState(false);
     const [selectedMeeting, setSelectedMeeting] = useState(null);
     const [dataAgenda, setDataAgenda] = useState([]);
@@ -14,10 +14,11 @@ export default function MeetingCards(){
     };
 
     useEffect(()=>{
+        // console.log(reRender);
         handleApiRequest("/agendas?status=pending&limit=3")
         .then(response => setDataAgenda(response?.data))
         .catch(error => console.error(error));
-    }, []);
+    }, [reRender]);
     
     return (
         <>

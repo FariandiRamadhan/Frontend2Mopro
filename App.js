@@ -3,12 +3,12 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { checkAuthStatus } from './Utilities/fetch_functions';
+
 import Home from './screens/Home';
 import Login from './screens/Login';
 import SplashScreen from './screens/SplashScreen';
 import SplashScreen2 from './screens/SplashScreen2';
 import NewAgenda from './screens/NewAgenda';
-// import Search from './component/Search';
 import ViewAgenda from './screens/ViewAgenda';
 import EditAgenda from './screens/EditAgenda';
 import Notif from './components/Notif';

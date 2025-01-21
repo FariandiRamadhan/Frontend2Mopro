@@ -11,9 +11,18 @@ const Icon = ({ name, size, color }) => {
   return <Ionicons name={name} size={size} color={color} />;
 };
 
-export default function Home() {
+export default function Home({ route }) {
   const navigation = useNavigation();
 
+  let data = "";
+  if(typeof route.params !== "undefined"){
+    data = route.params;
+    console.log(data);
+  }
+  console.log(route);
+
+  // useEffect
+  
   const handleNewAgenda = () => {
     navigation.navigate('NewAgenda');
   };
@@ -52,7 +61,7 @@ export default function Home() {
         <View style={styles.upcomingSection}>
           <Text style={styles.sectionTitle}>Upcoming Meetings</Text>
           <View style={styles.meetingsSection}>
-            <MeetingCards/>
+            <MeetingCards reRender={data}/>
           </View>
         </View>
       </View>

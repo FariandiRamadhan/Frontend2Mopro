@@ -1,25 +1,63 @@
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
 import { handleApiRequest } from '../Utilities/fetch_functions';
 import { statusColors } from '../components/statusColors';
 
-export default function EditAgenda() {
+export default function EditAgenda({ route }) {
   const navigation = useNavigation();
+  let data = "a";
+  // const [getForm, setGetForm] = useState({});
   const [form, setForm] = useState({
-    judul           : '',
-    meeting_time    : {tanggal: "", jam: ""},
-    lokasi          : '',
-    participants    : '',
-    deskripsi_rapat : ''
+    agenda_id         : '',
+    judul             : '',
+    meeting_time      : {tanggal: "", jam: ""},
+    lokasi            : '',
+    participants      : '',
+    deskripsi_rapat   : '',
+    status            : 'pending',
+    kesimpulan_rapat  : '',
+    follow_up_actions : ''
   });
+
+  if(typeof route.params !== "undefined"){
+    data = route.params.agenda_id;
+    console.log(data);
+  }
+  
+  useEffect(() => {
+    handleApiRequest(`/agendas/${data}`)
+    .then(response => {
+        console.log(response);
+        const data = response.data[0];
+
+        setForm({
+          agenda_id         : data.agenda_id,
+          judul             : data.judul,
+          meeting_time      : {tanggal: data.meeting_time.tanggal, jam: data.meeting_time.jam},
+          lokasi            : data.lokasi,
+          participants      : data.participants.toString(),
+          deskripsi_rapat   : data.deskripsi_rapat,
+          status            : data.status,
+          kesimpulan_rapat  : data.kesimpulan_rapat,
+          follow_up_actions : data.follow_up_actions
+        });
+        setTime(data.meeting_time.jam);
+        setDate(data.meeting_time.tanggal);
+    }).catch(error => console.error(error));
+  }, [route]);
+
   const [errorForm, setErrorForm] = useState({
-    judul           : '',
-    meeting_time    : "",
-    lokasi          : '',
-    participants    : '',
-    deskripsi_rapat : ''
+    agenda_id         : '',
+    judul             : '',
+    meeting_time      : '',
+    lokasi            : '',
+    participants      : '',
+    deskripsi_rapat   : '',
+    status            : 'pending',
+    kesimpulan_rapat  : '',
+    follow_up_actions : ''
   });
   const [errorAlert, setErrorAlert] = useState("");
   const [time, setTime] = useState("");
@@ -49,37 +87,43 @@ export default function EditAgenda() {
     });
   }
 
+  // Menghandle perubahan input waktu
   const dateHandler = (rawDate) => {
-    // Remove any non-numeric characters
+    // Menghapus karakter non-numeric
     let cleanInput = rawDate.replace(/[^0-9]/g, '');
     let formattedDate = "";
               
-    // Membatasi input YYYY/MM/dd
+    // Membatasi input dd/MM/YYYY
     cleanInput = cleanInput.slice(0, 8);
 
-    if (cleanInput.length >= 6) {
-      formattedDate = `${cleanInput.slice(0, 4)}/${cleanInput.slice(4, 6)}/${cleanInput.slice(6, 8)}`;
-    } else if(cleanInput.length >= 4) {
-      formattedDate = `${cleanInput.slice(0, 4)}/${cleanInput.slice(4, 6)}`;
+    // Jika panjang input lebih dari 4 maka akan muncul dua "/", contoh : "20/10/1"
+    if (cleanInput.length >= 4) {
+      formattedDate = `${cleanInput.slice(0, 2)}/${cleanInput.slice(2, 4)}/${cleanInput.slice(4, 8)}`;
+
+    // Jika panjang input lebih dari 2 maka akan muncul satu "/", contoh : "20/1"
+    } else if(cleanInput.length >= 2) {
+      formattedDate = `${cleanInput.slice(0, 2)}/${cleanInput.slice(2, 4)}`;
     } else {
       formattedDate = cleanInput;
     }
+
     setDate(formattedDate)
 
     setForm({...form, meeting_time:{...form.meeting_time, tanggal: formattedDate}})
   }
 
+  // Menghandle perubahan input waktu
   const timeHandler = (rawTime) => {
     let cleanInput = rawTime.replace(':', '');
     let formattedTime = "";
 
-    // Remove any non-numeric characters
+    // Menghapus input non-numeric
     cleanInput = cleanInput.replace(/[^0-9]/g, '');
     
-    // Limit to 4 digits
+    // Membatasi input sampai 4 digit saja
     cleanInput = cleanInput.slice(0, 4);
     
-    // Add colon after two characters if length is greater than 2
+    // Menambahkan ":" jika input lebih dari 2 digit
     if (cleanInput.length >= 2) {
       formattedTime = cleanInput.slice(0, 2) + ':' + cleanInput.slice(2);
     } else {
@@ -89,7 +133,7 @@ export default function EditAgenda() {
     setTime(formattedTime);
     setForm({...form, meeting_time:{...form.meeting_time, jam: formattedTime}});
   }
-// navigation.navigate('Home')
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -109,6 +153,7 @@ export default function EditAgenda() {
             style={styles.input}
             placeholder="Enter meeting title"
             placeholderTextColor="#666"
+            value={form.judul}
             onChangeText={(title)=> setForm({...form, judul: title})}
           />
           <Text style={[styles.textError, statusColors.errorText]}>{errorForm.judul}</Text>
@@ -122,7 +167,7 @@ export default function EditAgenda() {
             </View>
             <TextInput
               style={styles.input}
-              placeholder="yyyy/mm/dd"
+              placeholder="dd/mm/yyyy"
               placeholderTextColor="#666"
               value={date}
               onChangeText={dateHandler}
@@ -134,7 +179,6 @@ export default function EditAgenda() {
               <Ionicons name="time-outline" size={20} color="#0066FF" />
               <Text style={styles.label}>Time</Text>
             </View>
-            {/* <RNDateTimePicker value={new Date()} mode='time' style={styles.input}/> */}
             <TextInput
               style={styles.input}
               placeholder="--:--"
@@ -155,6 +199,7 @@ export default function EditAgenda() {
             style={styles.input}
             placeholder="Enter meeting location"
             placeholderTextColor="#666"
+            value={form.lokasi}
             onChangeText={(location)=> setForm({...form, lokasi: location})}
           />
           <Text style={[styles.textError, statusColors.errorText]}>{errorForm.lokasi}</Text>
@@ -171,6 +216,7 @@ export default function EditAgenda() {
             placeholderTextColor="#666"
             multiline={true}
             numberOfLines={4}
+            value={form.participants}
             onChangeText={(participants)=> setForm({...form, participants: participants})}
           />
           <Text style={[styles.textError, statusColors.errorText]}>{errorForm.participants}</Text>
@@ -187,6 +233,7 @@ export default function EditAgenda() {
             placeholderTextColor="#666"
             multiline={true}
             numberOfLines={4}
+            value={form.deskripsi_rapat}
             onChangeText={(deskripsi)=> setForm({...form, deskripsi_rapat: deskripsi})}
           />
           <Text style={[styles.textError, statusColors.errorText]}>{errorForm.deskripsi_rapat}</Text>

@@ -3,11 +3,12 @@ import { useState } from 'react';
 export default function Filter() {
   const filterMeetings = (meetings, searchParams) => {
     if (!meetings) return [];
-    
+    console.log(meetings);
+    console.log(searchParams);
     return meetings.filter(meeting => {
       // Jika ada input tanggal, prioritaskan filter tanggal
       if (searchParams.startDate && searchParams.endDate) {
-        const meetingDate = new Date(meeting.date);
+        const meetingDate = new Date(meeting.meeting_time.tanggal);
         const startDate = new Date(searchParams.startDate);
         const endDate = new Date(searchParams.endDate);
         return meetingDate >= startDate && meetingDate <= endDate;
@@ -15,7 +16,8 @@ export default function Filter() {
       
       // Jika tidak ada filter tanggal, gunakan filter judul
       if (searchParams.title) {
-        return meeting.title.toLowerCase().includes(searchParams.title.toLowerCase());
+        console.log("ok");
+        return meeting.judul.toLowerCase().includes(searchParams.title.toLowerCase());
       }
 
       // Jika tidak ada filter sama sekali, tampilkan semua
