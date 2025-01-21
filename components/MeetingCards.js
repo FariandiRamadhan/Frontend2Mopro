@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import Notif from "../component/Notif";
+import Notif from "../components/Notif";
 import { handleApiRequest } from "../Utilities/fetch_functions";
 
 export default function MeetingCards(){
@@ -14,10 +14,11 @@ export default function MeetingCards(){
     };
 
     useEffect(()=>{
-        handleApiRequest("/agendas")
+        handleApiRequest("/agendas?status=pending&limit=3")
         .then(response => setDataAgenda(response?.data))
         .catch(error => console.error(error));
     }, []);
+    
     return (
         <>
         {/* POP UP Notifikasi */}
@@ -28,7 +29,7 @@ export default function MeetingCards(){
         />
 
         {/* Informasi Meeting */}
-        {console.log(dataAgenda)}
+        {/* {console.log(dataAgenda)} */}
         {dataAgenda?.length === 0? <View style={styles.meetingCard}><Text style={styles.meetingTitle}>There's no upcoming meeting</Text></View>: null}
         {dataAgenda.map((data, index) => {
             if(data?.status.toLowerCase() == "pending"){

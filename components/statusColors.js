@@ -11,6 +11,9 @@ export const statusColors = StyleSheet.create({
     danger: {
         color: '#ffffff'
     },
+    errorText: {
+      color: '#dc3545'
+    },
     bgSuccess: {
         backgroundColor: '#198754'
     },

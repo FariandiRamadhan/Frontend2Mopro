@@ -12,6 +12,7 @@ export const API_BASE_URL = 'http://localhost:8080';
  * @returns 
  */
 export const handleApiRequest = async (endpoint, options = {}, rawResponse = false) => {
+
   try {
     // Default Header untuk request
     const headers = {
@@ -36,15 +37,16 @@ export const handleApiRequest = async (endpoint, options = {}, rawResponse = fal
     const data = await response.json();
 
     // console.dir(await response.headers);
-    // Melihat request Header
+    // Melihat request invalid
     if (!response.ok) {
-      throw new Error(response.headers || 'An error occurred');
+      throw [response.status, response.statusText, data];
     }
 
     // data berbentuk JSON
     return data;
   } catch (error) {
-    console.error('API Request Failed:', JSON.parse(error));
+    // console.dir(error);
+    console.error('API Request Failed:', error);
     throw error;
   }
 };

@@ -18,14 +18,14 @@ export default function Delete({ isVisible, onClose, onConfirm }) {
             </View>
           </View>
 
-          <Text style={styles.confirmText}>Are you sure want to delete?</Text>
+          <Text style={styles.confirmText}>Are you sure want to delete this meeting?</Text>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
               style={styles.yesButton}
               onPress={onConfirm}
             >
-              <Text style={styles.buttonText}>Yes?</Text>
+              <Text style={styles.buttonText}>Yes</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 

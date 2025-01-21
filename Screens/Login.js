@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import { StyleSheet, SafeAreaView, View, Image, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../Utilities/fetch_functions';
+import { statusColors } from '../components/statusColors';
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -9,24 +10,32 @@ export default function Login() {
     password: '',
   });
 
+  const [errorLogin, setErrorLogin] = useState("");
+
   const navigation = useNavigation();
 
   const handleSignIn = () => {
-    console.log("click");
-    try {
+    if(form.username == "" || form.password == ""){
+      setErrorLogin("Password atau Username harus diisi");
+    }else{
       loginUser(form.username, form.password).then(
         response => {
           console.log(response);
           if (response.success) {
             navigation.navigate('SplashScreen');
           } else {
+            setErrorLogin("Password dan Username tidak ditemukan");
             Alert.alert('Error', data.message || 'Login failed');
           }
         }
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Network error occurred');
+      ).catch(error => {
+        setErrorLogin("Password dan Username tidak ditemukan")
+        console.error(error); 
+      });
     }
+    setTimeout(() => {
+      setErrorLogin("");
+    }, 2000);
   };
 
 
@@ -40,6 +49,11 @@ export default function Login() {
         />
         <Text style={styles.title}>Meeting App</Text>
       </View>
+      {errorLogin != ''? (
+      <View style={[styles.error, statusColors.bgDanger]}>
+        <Text style={[styles.errorText, statusColors.danger]}>{errorLogin}</Text>
+      </View>  
+      ) : null}
 
       <View style={styles.container}>
         <Text style={styles.title2}>Sign In</Text>
@@ -125,4 +139,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  error: {
+    position: 'absolute',
+    top: 30, 
+    left: 20,
+    right: 20,
+    paddingBlock: 8,
+    paddingInline: 6,
+    borderRadius: 10,
+    shadowOpacity: 0.2,
+    shadowColor: '#000',
+    shadowRadius: 10,
+    elevation: 5,
+    zIndex: 10
+  },
+  errorText: {
+    fontSize: 18,
+    textAlign: 'center'
+  }
 });

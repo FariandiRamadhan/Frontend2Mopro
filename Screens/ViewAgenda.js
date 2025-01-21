@@ -4,9 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { handleWarna } from '../components/statusColors';
-import Notif from '../component/Notif';
-import Search from '../component/Search';
-import Filter from '../component/Filter';
+import Notif from '../components/Notif';
+import Search from '../components/Search';
 import { handleApiRequest } from '../Utilities/fetch_functions';
 
 export default function ViewAgenda() {
@@ -16,15 +15,17 @@ export default function ViewAgenda() {
 
   // Menyimpan data Fetch
   const [dataAgenda, setDataAgenda] = useState([]);
-  const { filterMeetings } = Filter();
+  const [searchParams, setSearchParams] = useState({
+    title           : '',
+    tanggal_mulai   : '',
+    tanggal_selesai : ''
+  });
 
   useEffect(()=>{
     handleApiRequest("/agendas")
       .then(response => setDataAgenda(response?.data))
       .catch(error => console.error(error));
-  }, []);
-
-  const [filteredMeetings, setFilteredMeetings] = useState(dataAgenda);
+  }, [searchParams]);
 
   const handleViewDetails = (meeting) => {
     console.log(meeting);
@@ -32,9 +33,8 @@ export default function ViewAgenda() {
     setDetailModalVisible(true);
   };
 
-  const handleSearch = (searchParams) => {
-    const filtered = filterMeetings(dataAgenda, searchParams);
-    setFilteredMeetings(filtered);
+  const handleSearch = (searchTitle) => {
+    setSearchParams()
   };
 
   return (
@@ -53,7 +53,7 @@ export default function ViewAgenda() {
       </View>
 
       <ScrollView style={styles.meetingList}>
-        {console.log(filteredMeetings)}
+        
         {dataAgenda.map(meeting => (
           <View key={meeting?.agenda_id} style={styles.meetingItem}>
             <Text style={styles.meetingTitle}>{meeting?.judul}</Text>

@@ -11,9 +11,9 @@ import NewAgenda from './screens/NewAgenda';
 // import Search from './component/Search';
 import ViewAgenda from './screens/ViewAgenda';
 import EditAgenda from './screens/EditAgenda';
-import Notif from './component/Notif';
-import LoadingScreen from './screens/Loading';
-import CustomDrawerContent from './component/CustomDrawerContent';
+import Notif from './components/Notif';
+import LoadingScreen from './components/Loading';
+import CustomDrawerContent from './components/CustomDrawerContent';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -65,9 +65,9 @@ export default function App() {
           setUsername(response.data.username);
         }
         setLoading(false);
-        console.log(response, isLogin);
+        // console.log(response, isLogin);
       }
-    ).catch(error => console.error);
+    ).catch(error => console.error(error));
   }, [setisLogin])
 
   if (loading) {

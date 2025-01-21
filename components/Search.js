@@ -36,27 +36,27 @@ export default function Search({ onSearch }) {
     });
   };
 
-  const handleStartDateChange = (event, selectedDate) => {
-    if (selectedDate) {
-      setStartDate(selectedDate);
-      onSearch({
-        title: '',
-        startDate: formatDate(selectedDate),
-        endDate: formatDate(endDate)
-      });
-    }
-  };
+  // const handleStartDateChange = (event, selectedDate) => {
+  //   if (selectedDate) {
+  //     setStartDate(selectedDate);
+  //     onSearch({
+  //       title: '',
+  //       startDate: formatDate(selectedDate),
+  //       endDate: formatDate(endDate)
+  //     });
+  //   }
+  // };
 
-  const handleEndDateChange = (event, selectedDate) => {
-    if (selectedDate) {
-      setEndDate(selectedDate);
-      onSearch({
-        title: '',
-        startDate: formatDate(startDate),
-        endDate: formatDate(selectedDate)
-      });
-    }
-  };
+  // const handleEndDateChange = (event, selectedDate) => {
+  //   if (selectedDate) {
+  //     setEndDate(selectedDate);
+  //     onSearch({
+  //       title: '',
+  //       startDate: formatDate(startDate),
+  //       endDate: formatDate(selectedDate)
+  //     });
+  //   }
+  // };
 
   const formatDate = (date) => {
     return date.toLocaleDateString('en-US', {

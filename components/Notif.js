@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { handleWarna } from '../components/statusColors';
 import Delete from './Delete';
+import { handleApiRequest } from '../Utilities/fetch_functions';
 
 export default function Notif({ isVisible, onClose, meeting }) {
   const navigation = useNavigation();
@@ -12,10 +13,17 @@ export default function Notif({ isVisible, onClose, meeting }) {
 
   const handleEditAgenda = () => {
     navigation.navigate('EditAgenda');
+    onClose();
   };
 
   const handleDelete = () => {
     setShowDeleteConfirm(false);
+    handleApiRequest(`/agendas/${meeting?.agenda_id}`, {method: 'DELETE'})
+    .then(response => {
+      console.dir(response);
+      navigation.navigate('Home');
+    })
+    .catch(error => console.error(error));
     onClose();
   };
 
@@ -40,6 +48,8 @@ export default function Notif({ isVisible, onClose, meeting }) {
               </View>
 
               <Text style={styles.modalMeetingTitle}>{meeting?.title}</Text>
+              
+              {/* Secara otomatis memilih warna sesuai status */}
               <View style={[styles.statusBadge, handleWarna(meeting?.status)?.bgColor]}>
                 <Text style={[styles.statusText, handleWarna(meeting?.status)?.color]}>{meeting?.status}</Text>
               </View>
@@ -87,7 +97,7 @@ export default function Notif({ isVisible, onClose, meeting }) {
                 <Text style={styles.sectionTitle}>Kesimpulan Rapat</Text>
                 <View style={styles.detailRow}>
                   <Ionicons name="document-attach-outline" size={20} color="#808080" />
-                  <Text style={styles.detailText}>{meeting?.kesimpulan}</Text>
+                  <Text style={styles.detailText}>{meeting?.kesimpulan == null? "Tidak ada": meeting?.kesimpulan}</Text>
                 </View>
               </View>
 
@@ -95,7 +105,7 @@ export default function Notif({ isVisible, onClose, meeting }) {
                 <Text style={styles.sectionTitle}>Follow Up Actions</Text>
                 <View style={styles.detailRow}>
                   <Ionicons name="documents-outline" size={20} color="#808080" />
-                  <Text style={styles.detailText}>{meeting?.followUpActions}</Text>
+                  <Text style={styles.detailText}>{meeting?.followUpActions == null? "Tidak ada": meeting?.followUpActions}</Text>
                 </View>
               </View>  
               
