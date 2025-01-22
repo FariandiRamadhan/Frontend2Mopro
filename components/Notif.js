@@ -21,8 +21,7 @@ export default function Notif({ isVisible, onClose, meeting }) {
     handleApiRequest(`/agendas/${meeting?.agenda_id}`, {method: 'DELETE'})
     .then(response => {
       console.dir(response);
-      navigation.navigate('Home', {action: true});
-      navigation.navigate('ViewAgenda', {action: true});
+      navigation.setParams({action: true})
     })
     .catch(error => console.error(error));
     onClose();

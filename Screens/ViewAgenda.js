@@ -49,6 +49,7 @@ export default function ViewAgenda({ route }) {
         onClose={() => setDetailModalVisible(false)}
         meeting={selectedMeeting}
       />
+
       <View style={styles.header}>
         <Text style={styles.title}>Meeting Agenda</Text>
       </View>
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    paddingTop: 40,
   },
   title: {
     fontSize: 28,
@@ -194,5 +194,5 @@ const styles = StyleSheet.create({
   },
   searchSection: {
     zIndex: 1000,
-  },
+  }
 }); 

@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { StyleSheet, SafeAreaView, View, Image, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../Utilities/fetch_functions';
 import { statusColors } from '../components/statusColors';
@@ -25,7 +25,7 @@ export default function Login() {
             navigation.navigate('SplashScreen');
           } else {
             setErrorLogin("Password dan Username tidak ditemukan");
-            Alert.alert('Error', data.message || 'Login failed');
+            console.error('Error', data.message || 'Login failed');
           }
         }
       ).catch(error => {

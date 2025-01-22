@@ -38,8 +38,8 @@ function MainDrawer() {
     >
       <Drawer.Screen name="Home" component={Home} options={{ title: 'Meeting Agenda' }} />
       <Drawer.Screen name="NewAgenda" component={NewAgenda} options={{ title: 'New Agenda' }} />
-      <Drawer.Screen name="Search" component={ViewAgenda} options={{ title: 'Search' }} />
-      <Drawer.Screen name="Login" component={Login} options={{ title: 'Logout' }} />
+      <Drawer.Screen name="ViewAgenda" component={ViewAgenda} options={{ title: 'Search' }} />
+      {/* <Drawer.Screen name="Login" component={Login} options={{ title: 'Logout' }} /> */}
     </Drawer.Navigator>
   );
 }
@@ -62,7 +62,7 @@ export default function App() {
       response => {
         if(response){
           setisLogin(false);
-          setUsername(response.data.username);
+          setUsername(response.data?.username);
         }
         setLoading(false);
         // console.log(response, isLogin);
