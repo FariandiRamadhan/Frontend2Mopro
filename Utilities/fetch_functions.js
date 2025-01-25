@@ -24,7 +24,7 @@ export const handleApiRequest = async (endpoint, options = {}, rawResponse = fal
     const requestOptions = {
       ...options,
       headers,
-      credentials: 'include', // Important for cookie handling
+      credentials: 'include',
     };
 
     // Request ke REST API
